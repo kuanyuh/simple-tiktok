@@ -1,0 +1,6 @@
+
+用户登录：user表中，name添加唯一索引
+发布列表：video表中，user_id添加普通索引
+点赞操作：favorite表中，user_id添加普通索引
+评论列表：comment表中，video_id添加普通索引
+关注和粉丝列表：relation表，user_id和to_user_id加普通索引
