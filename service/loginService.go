@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/kuanyuh/simple-tiktok/dao"
 	"math/rand"
@@ -29,14 +28,8 @@ type User struct {
 //  @return bool：若存在返回true
 //
 func IsExist(email string) bool {
-	db, err := gorm.Open("mysql",
-		"root:CYB20011001@(120.25.179.82:3306)/douyin?charset=utf8mb4&parseTime=True&loc=Local")
-	if err != nil {
-		panic(err)
-	}
 	user := UserLogin{}
 	dao.DB.Table("login").Where("email = ?", email).First(&user)
-	defer db.Close()
 	if user == (UserLogin{}) { //不存在返回false
 		return false
 	}
@@ -49,12 +42,6 @@ func IsExist(email string) bool {
 //  @param password：注册时的密码
 //  @return int64：用户的id
 func SaveUser(username string, password string) int64 {
-	db, err := gorm.Open("mysql",
-		"root:CYB20011001@(120.25.179.82:3306)/douyin?charset=utf8mb4&parseTime=True&loc=Local")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
 	user := UserLogin{Email: username, Password: password}
 	dao.DB.Table("login").Save(&user)
 	//获取新建用户的id
@@ -72,12 +59,6 @@ func SaveUser(username string, password string) int64 {
 //  @param password：注册密码
 //  @return UserLogin：已注册用户的UserLogin对象
 func GetUser(username string, password string) UserLogin {
-	db, err := gorm.Open("mysql",
-		"root:CYB20011001@(120.25.179.82:3306)/douyin?charset=utf8mb4&parseTime=True&loc=Local")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
 	user := UserLogin{}
 	dao.DB.Table("login").Where("email = ? AND password = ?", username, password).First(&user)
 	return user
@@ -88,12 +69,6 @@ func GetUser(username string, password string) UserLogin {
 //  @param id：用户id
 //  @return User：返回用户信息（User）
 func GetUserinfoById(id string) User {
-	db, err := gorm.Open("mysql",
-		"root:CYB20011001@(120.25.179.82:3306)/douyin?charset=utf8mb4&parseTime=True&loc=Local")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
 	user := User{}
 	dao.DB.Table("user").Where("id = ?", id).First(&user)
 	return user
