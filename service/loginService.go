@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/kuanyuh/simple-tiktok/dao"
 	"math/rand"
 	"time"
 )
@@ -34,7 +35,7 @@ func IsExist(email string) bool {
 		panic(err)
 	}
 	user := UserLogin{}
-	db.Table("login").Where("email = ?", email).First(&user)
+	dao.DB.Table("login").Where("email = ?", email).First(&user)
 	defer db.Close()
 	if user == (UserLogin{}) { //不存在返回false
 		return false
@@ -55,12 +56,12 @@ func SaveUser(username string, password string) int64 {
 	}
 	defer db.Close()
 	user := UserLogin{Email: username, Password: password}
-	db.Table("login").Save(&user)
+	dao.DB.Table("login").Save(&user)
 	//获取新建用户的id
 	user1 := GetUser(username, password)
 	//将新建用户同时保存到user表中，代码模拟外键
 	userInfo := User{Id: user1.ID, Name: GetRandomString(8), FollowCount: 0, FollowerCount: 0, IsFollow: false}
-	db.Table("user").Save(&userInfo)
+	dao.DB.Table("user").Save(&userInfo)
 
 	return user1.ID
 }
@@ -78,7 +79,7 @@ func GetUser(username string, password string) UserLogin {
 	}
 	defer db.Close()
 	user := UserLogin{}
-	db.Table("login").Where("email = ? AND password = ?", username, password).First(&user)
+	dao.DB.Table("login").Where("email = ? AND password = ?", username, password).First(&user)
 	return user
 }
 
@@ -94,7 +95,7 @@ func GetUserinfoById(id string) User {
 	}
 	defer db.Close()
 	user := User{}
-	db.Table("user").Where("id = ?", id).First(&user)
+	dao.DB.Table("user").Where("id = ?", id).First(&user)
 	return user
 }
 
