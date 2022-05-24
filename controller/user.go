@@ -1,25 +1,13 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/common"
+	"github.com/kuanyuh/simple-tiktok/service"
 	"net/http"
-	"sync/atomic"
+	"strconv"
 )
-
-// usersLoginInfo use map to store user info, and key is username+password for demo
-// user data will be cleared every time the server starts
-// test data: username=zhanglei, password=douyin
-var usersLoginInfo = map[string]User{
-	"zhangleidouyin": {
-		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		IsFollow:      true,
-	},
-}
-
-var userIdSequence = int64(1)
 
 type UserLoginResponse struct {
 	Response
@@ -32,61 +20,78 @@ type UserResponse struct {
 	User User `json:"user"`
 }
 
+//用户注册
 func Register(c *gin.Context) {
+	//从请求参数获取登录名和密码
 	username := c.Query("username")
 	password := c.Query("password")
 
-	token := username + password
-
-	if _, exist := usersLoginInfo[token]; exist {
+	if service.IsExist(username) {
+		//如果邮箱被注册过了
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "User already exist"},
 		})
 	} else {
-		atomic.AddInt64(&userIdSequence, 1)
-		newUser := User{
-			Id:   userIdSequence,
-			Name: username,
-		}
-		usersLoginInfo[token] = newUser
+		//保存新用户，获取新注册用户id
+		id := service.SaveUser(username, password)
+		user := service.GetUserinfoById(strconv.FormatInt(id, 10))
+		//根据用户信息生成token
+		token := common.GetHStoken("JWT", &user)
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0},
-			UserId:   userIdSequence,
-			Token:    username + password,
+			UserId:   id,
+			Token:    token,
 		})
 	}
+
 }
 
+//用户登录
 func Login(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
-	token := username + password
-
-	if user, exist := usersLoginInfo[token]; exist {
+	if service.IsExist(username) {
+		user := service.GetUser(username, password)
+		if user == (service.UserLogin{}) {
+			c.JSON(http.StatusOK, UserLoginResponse{
+				Response: Response{StatusCode: 1, StatusMsg: "密码错误"},
+			})
+		} else {
+			userInfo := service.GetUserinfoById(strconv.FormatInt(user.ID, 10))
+			//根据用户信息生成token
+			token := common.GetHStoken("JWT", &userInfo)
+			c.JSON(http.StatusOK, UserLoginResponse{
+				Response: Response{StatusCode: 0},
+				UserId:   user.ID,
+				Token:    token,
+			})
+		}
+	} else { //用户不存在
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 0},
-			UserId:   user.Id,
-			Token:    token,
-		})
-	} else {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+			Response: Response{StatusCode: 1, StatusMsg: "用户不存在，请先注册"},
 		})
 	}
 }
 
+//跳转到用户信息页面
 func UserInfo(c *gin.Context) {
 	token := c.Query("token")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	//解析token
+	claims := common.ParseHStoken(token)
+	id, _ := json.Marshal(claims["id"])
+
+	user := service.GetUserinfoById(string(id))
+	if user != (service.User{}) {
 		c.JSON(http.StatusOK, UserResponse{
 			Response: Response{StatusCode: 0},
-			User:     user,
+			User:     User(user),
 		})
 	} else {
 		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+			Response: Response{StatusCode: 1, StatusMsg: "用户不存在"},
 		})
 	}
+
 }

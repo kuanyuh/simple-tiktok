@@ -1,8 +1,11 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/common"
+	"github.com/kuanyuh/simple-tiktok/service"
 	"net/http"
 	"path/filepath"
 )
@@ -16,7 +19,12 @@ type VideoListResponse struct {
 func Publish(c *gin.Context) {
 	token := c.PostForm("token")
 
-	if _, exist := usersLoginInfo[token]; !exist {
+	//解析token
+	claims := common.ParseHStoken(token)
+	id, _ := json.Marshal(claims["id"])
+	userInfo := service.GetUserinfoById(string(id))
+
+	if userInfo == (service.User{}) {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -31,8 +39,7 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)
-	user := usersLoginInfo[token]
-	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
+	finalName := fmt.Sprintf("%d_%s", userInfo.Id, filename)
 	saveFile := filepath.Join("./public/", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
 		c.JSON(http.StatusOK, Response{
