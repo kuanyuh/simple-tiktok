@@ -2,12 +2,13 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/dao"
 	"net/http"
 )
 
 type CommentListResponse struct {
 	Response
-	CommentList []Comment `json:"comment_list,omitempty"`
+	CommentList []dao.Comment `json:"comment_list,omitempty"`
 }
 
 // CommentAction no practical effect, just check if token is valid

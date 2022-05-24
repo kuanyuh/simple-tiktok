@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/dao"
 	"net/http"
 	"sync/atomic"
 )
@@ -9,7 +11,7 @@ import (
 // usersLoginInfo use map to store user info, and key is username+password for demo
 // user data will be cleared every time the server starts
 // test data: username=zhanglei, password=douyin
-var usersLoginInfo = map[string]User{
+var usersLoginInfo = map[string]dao.User{
 	"zhangleidouyin": {
 		Id:            1,
 		Name:          "zhanglei",
@@ -29,7 +31,7 @@ type UserLoginResponse struct {
 
 type UserResponse struct {
 	Response
-	User User `json:"user"`
+	User dao.User `json:"user"`
 }
 
 func Register(c *gin.Context) {
@@ -44,7 +46,7 @@ func Register(c *gin.Context) {
 		})
 	} else {
 		atomic.AddInt64(&userIdSequence, 1)
-		newUser := User{
+		newUser := dao.User{
 			Id:   userIdSequence,
 			Name: username,
 		}
@@ -58,20 +60,44 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	username := c.Query("username")
+	account := c.Query("username")
 	password := c.Query("password")
 
-	token := username + password
+	token := account + password
 
-	if user, exist := usersLoginInfo[token]; exist {
+	//if user, exist := usersLoginInfo[token]; exist {
+	//	c.JSON(http.StatusOK, UserLoginResponse{
+	//		Response: Response{StatusCode: 0},
+	//		UserId:   user.Id,
+	//		Token:    token,
+	//	})
+	//} else {
+	//	c.JSON(http.StatusOK, UserLoginResponse{
+	//		Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+	//	})
+	//}
+	user, nums := dao.GetUser(account)
+	if nums==0 {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{
+				StatusCode: USERNAME_INVALID,
+				StatusMsg: "User doesn't exist",
+			},
+		})
+	}else if user.Password!=password{
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{
+				StatusCode: PASSWORD_INVALID,
+				StatusMsg: "Password wrong",
+			},
+		})
+	}else {
+		fmt.Println("login success!!")
+		usersLoginInfo[token] = user
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0},
 			UserId:   user.Id,
 			Token:    token,
-		})
-	} else {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 		})
 	}
 }

@@ -3,13 +3,14 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/dao"
 	"net/http"
 	"path/filepath"
 )
 
 type VideoListResponse struct {
 	Response
-	VideoList []Video `json:"video_list"`
+	VideoList []dao.Video `json:"video_list"`
 }
 
 // Publish check token then save upload file to public directory

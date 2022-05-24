@@ -2,9 +2,11 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/dao"
 )
 
 func main() {
+	dao.Init()
 	r := gin.Default()
 
 	initRouter(r)
