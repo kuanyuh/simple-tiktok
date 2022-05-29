@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/common"
+	"github.com/kuanyuh/simple-tiktok/service"
 	"net/http"
 )
 
@@ -9,7 +12,12 @@ import (
 func FavoriteAction(c *gin.Context) {
 	token := c.Query("token")
 
-	if _, exist := usersLoginInfo[token]; exist {
+	//解析token
+	claims := common.ParseHStoken(token)
+	id, _ := json.Marshal(claims["id"])
+	userInfo := service.GetUserinfoById(string(id))
+
+	if userInfo != (service.User{}) {
 		c.JSON(http.StatusOK, Response{StatusCode: 0})
 	} else {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
