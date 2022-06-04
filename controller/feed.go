@@ -19,7 +19,16 @@ func Feed(c *gin.Context) {
 	videos := service.Feed()
 	feedVideos := []Video{}
 	//结构体复制
-	for _, video := range videos {
+	videoCopy(&feedVideos,&videos)
+	c.JSON(http.StatusOK, FeedResponse{
+		Response:  Response{StatusCode: 0},
+		VideoList: feedVideos,
+		NextTime:  time.Now().Unix(),
+	})
+}
+
+func videoCopy(feedVideos *[]Video, videos *[]service.Video)  {
+	for _, video := range *videos {
 		feedVideo := Video{
 			Id: video.Id,
 			Author: User(service.GetUserinfoById(strconv.FormatInt(video.AuthorId,10))),
@@ -29,15 +38,6 @@ func Feed(c *gin.Context) {
 			CommentCount: video.CommentCount,
 			IsFavorite: video.IsFavorite,
 		}
-		feedVideos = append(feedVideos, feedVideo)
+		*feedVideos = append(*feedVideos, feedVideo)
 	}
-	c.JSON(http.StatusOK, FeedResponse{
-		Response:  Response{StatusCode: 0},
-		VideoList: feedVideos,
-		NextTime:  time.Now().Unix(),
-	})
-}
-
-func videoCopy(feedvideos *[]Video, videos *[]service.Video)  {
-
 }
