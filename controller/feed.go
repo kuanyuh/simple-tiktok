@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kuanyuh/simple-tiktok/service"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -21,7 +22,7 @@ func Feed(c *gin.Context) {
 	for _, video := range videos {
 		feedVideo := Video{
 			Id: video.Id,
-			Author: User(service.GetUserinfoById(string(video.AuthorId))),
+			Author: User(service.GetUserinfoById(strconv.FormatInt(video.AuthorId,10))),
 			PlayUrl: video.PlayUrl,
 			CoverUrl: video.CoverUrl,
 			FavoriteCount: video.FavoriteCount,
