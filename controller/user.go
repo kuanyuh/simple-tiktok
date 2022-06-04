@@ -20,7 +20,7 @@ type UserResponse struct {
 	User User `json:"user"`
 }
 
-//用户注册
+//Register 用户注册
 func Register(c *gin.Context) {
 	//从请求参数获取登录名和密码
 	username := c.Query("username")
@@ -46,7 +46,7 @@ func Register(c *gin.Context) {
 
 }
 
-//用户登录
+//Login 用户登录
 func Login(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
@@ -74,7 +74,7 @@ func Login(c *gin.Context) {
 	}
 }
 
-//跳转到用户信息页面
+//UserInfo 跳转到用户信息页面
 func UserInfo(c *gin.Context) {
 	token := c.Query("token")
 

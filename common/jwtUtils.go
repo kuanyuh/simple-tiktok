@@ -11,7 +11,7 @@ const (
 	SIGNED_KEY = "A40CCD9tC3553oer3dj26588E"
 )
 
-//获取签名算法为HS256的token
+//GetHStoken 获取签名算法为HS256的token
 func GetHStoken(tokenFirst string, user *service.User) string {
 	claims := jwt.MapClaims{ //claims里把userId和username封装成map
 		"tokenES": tokenFirst,
@@ -30,7 +30,7 @@ func GetHStoken(tokenFirst string, user *service.User) string {
 	return ss
 }
 
-//解析签名算法为HS256的token
+//ParseHStoken 解析签名算法为HS256的token
 func ParseHStoken(tokenString string) jwt.MapClaims {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SIGNED_KEY), nil

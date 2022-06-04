@@ -74,7 +74,7 @@ func GetUserinfoById(id string) User {
 	return user
 }
 
-//生成随机字符串，作为用户名
+//GetRandomString 生成随机字符串，作为用户名
 func GetRandomString(l int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"
 	bytes := []byte(str)
