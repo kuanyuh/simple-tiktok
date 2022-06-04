@@ -13,12 +13,12 @@ type Video struct {
 	FavoriteCount int64  `json:"favorite_count,omitempty"`
 	CommentCount  int64  `json:"comment_count,omitempty"`
 	IsFavorite    bool   `json:"is_favorite,omitempty"`
-	LatestTime    int64  `json:"latest_time,omitempty"`
+	CreatedAt    int64  `json:"created_at,omitempty"`
 }
 
 //Feed 视频流，app打开时
 func Feed() []Video {
 	var videos []Video
-	dao.DB.Table("video").Find(&videos)
+	dao.DB.Table("video").Order("created_at DESC").Find(&videos)
 	return videos
 }

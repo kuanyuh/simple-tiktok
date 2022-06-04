@@ -11,7 +11,7 @@ func TestFeed(t *testing.T) {
 	dao.Init()
 	videos:= Feed()
 	for i, video := range videos {
-		fmt.Printf(" %v: %v",i,video)
+		fmt.Printf(" %v: %v\n",i,video)
 	}
 }
 
