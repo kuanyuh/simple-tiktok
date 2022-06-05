@@ -6,6 +6,7 @@ import (
 	"github.com/kuanyuh/simple-tiktok/common"
 	"github.com/kuanyuh/simple-tiktok/service"
 	"net/http"
+	"strconv"
 )
 
 type UserListResponse struct {
@@ -16,13 +17,22 @@ type UserListResponse struct {
 // RelationAction no practical effect, just check if token is valid
 func RelationAction(c *gin.Context) {
 	token := c.Query("token")
-
 	//解析token
 	claims := common.ParseHStoken(token)
 	id, _ := json.Marshal(claims["id"])
 	userInfo := service.GetUserinfoById(string(id))
-
 	if userInfo != (service.User{}) {
+		author := c.Query("to_user_id")
+		authorId, _ := strconv.ParseInt(author, 10, 64)
+		userId, _ := strconv.ParseInt(string(id), 10, 64)
+		relation := service.GetRelation(userId, authorId)
+		if (relation != service.Relation{}) {
+			//取关
+			service.DelRelation(userId, authorId)
+		} else {
+			//关注
+			service.DoRelation(userId, authorId)
+		}
 		c.JSON(http.StatusOK, Response{StatusCode: 0})
 	} else {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
