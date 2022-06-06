@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/kuanyuh/simple-tiktok/dao"
 	"testing"
 )
@@ -23,4 +24,11 @@ func TestGetUser(t *testing.T) {
 func TestGetRandomString(t *testing.T) {
 	dao.Init()
 	t.Logf(GetRandomString(1))
+}
+
+func TestIsFollow(t *testing.T) {
+	dao.Init()
+	user := GetUserinfoById("1")
+	IsFollow(1, &user)
+	fmt.Printf("%v",user)
 }
