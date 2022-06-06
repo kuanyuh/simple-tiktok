@@ -1,6 +1,9 @@
 package service
 
-import "github.com/kuanyuh/simple-tiktok/dao"
+import (
+	"fmt"
+	"github.com/kuanyuh/simple-tiktok/dao"
+)
 
 type Relation struct {
 	Id       int64 `json:"id,omitempty"`
@@ -9,13 +12,13 @@ type Relation struct {
 	IsFollow bool  `json:"is_follow,omitempty"`
 }
 
-//关注功能
+//DoRelation 关注功能
 func DoRelation(userId int64, toUserId int64) {
 	newRelation := Relation{UserId: userId, ToUserId: toUserId, IsFollow: true}
 	dao.DB.Table("relation").Save(&newRelation)
 }
 
-//取消关注
+//DelRelation 取消关注
 func DelRelation(userId int64, toUserId int64) {
 	r := GetRelation(userId, toUserId)
 	dao.DB.Table("relation").Delete(&r)
@@ -27,10 +30,26 @@ func GetRelation(userId int64, toUserId int64) Relation {
 	return relation
 }
 
-func AlreadyFollow(userId int64) {
-	dao.DB.Table("user").Where("id = ?", userId).Update("is_follow", 1)
+//FollowList 关注列表
+func FollowList(userId int64) []User {
+	var users []User
+	var relations []Relation
+	dao.DB.Table("relation").Where("user_id = ?", userId).Find(&relations)
+	for _, relation := range relations {
+		user := GetUserinfoById(fmt.Sprint(relation.ToUserId))
+		users = append(users, user)
+	}
+	return users
 }
 
-func NotFollow(userId int64) {
-	dao.DB.Table("user").Where("id = ?", userId).Update("is_follow", 0)
+//FollowerList 粉丝列表
+func FollowerList(userId int64) []User {
+	var users []User
+	var relations []Relation
+	dao.DB.Table("relation").Where("to_user_id = ?", userId).Find(&relations)
+	for _, relation := range relations {
+		user := GetUserinfoById(fmt.Sprint(relation.UserId))
+		users = append(users, user)
+	}
+	return users
 }
