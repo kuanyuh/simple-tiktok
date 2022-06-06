@@ -9,13 +9,13 @@ type Relation struct {
 	IsFollow bool  `json:"is_follow,omitempty"`
 }
 
-//关注功能
+// DoRelation 关注功能
 func DoRelation(userId int64, toUserId int64) {
 	newRelation := Relation{UserId: userId, ToUserId: toUserId, IsFollow: true}
 	dao.DB.Table("relation").Save(&newRelation)
 }
 
-//取消关注
+// DelRelation 取消关注
 func DelRelation(userId int64, toUserId int64) {
 	r := GetRelation(userId, toUserId)
 	dao.DB.Table("relation").Delete(&r)

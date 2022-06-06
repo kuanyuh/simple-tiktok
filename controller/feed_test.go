@@ -9,12 +9,12 @@ import (
 
 func TestVideoCopy(t *testing.T) {
 	dao.Init()
-	videos:= service.Feed()
+	videos := service.Feed()
 	for i, video := range videos {
-		fmt.Printf(" %v: %v\n",i,video)
+		fmt.Printf(" %v: %v\n", i, video)
 	}
 	var feedVideos []Video
-	videoCopy(&feedVideos,&videos)
+	VideoCopy(&feedVideos, &videos, "16")
 	for _, video := range feedVideos {
 		fmt.Printf("%v\n", video)
 	}

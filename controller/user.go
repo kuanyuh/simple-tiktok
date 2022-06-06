@@ -10,14 +10,14 @@ import (
 )
 
 type UserLoginResponse struct {
-	Response
+	service.Response
 	UserId int64  `json:"user_id,omitempty"`
 	Token  string `json:"token"`
 }
 
 type UserResponse struct {
-	Response
-	User User `json:"user"`
+	service.Response
+	User service.User `json:"user"`
 }
 
 //Register 用户注册
@@ -29,7 +29,7 @@ func Register(c *gin.Context) {
 	if service.IsExist(username) {
 		//如果邮箱被注册过了
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User already exist"},
+			Response: service.Response{StatusCode: 1, StatusMsg: "User already exist"},
 		})
 	} else {
 		//保存新用户，获取新注册用户id
@@ -38,7 +38,7 @@ func Register(c *gin.Context) {
 		//根据用户信息生成token
 		token := common.GetHStoken("JWT", &user)
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 0},
+			Response: service.Response{StatusCode: 0},
 			UserId:   id,
 			Token:    token,
 		})
@@ -55,21 +55,21 @@ func Login(c *gin.Context) {
 		user := service.GetUser(username, password)
 		if user == (service.UserLogin{}) {
 			c.JSON(http.StatusOK, UserLoginResponse{
-				Response: Response{StatusCode: 1, StatusMsg: "密码错误"},
+				Response: service.Response{StatusCode: 1, StatusMsg: "密码错误"},
 			})
 		} else {
 			userInfo := service.GetUserinfoById(strconv.FormatInt(user.ID, 10))
 			//根据用户信息生成token
 			token := common.GetHStoken("JWT", &userInfo)
 			c.JSON(http.StatusOK, UserLoginResponse{
-				Response: Response{StatusCode: 0},
+				Response: service.Response{StatusCode: 0},
 				UserId:   user.ID,
 				Token:    token,
 			})
 		}
 	} else { //用户不存在
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "用户不存在，请先注册"},
+			Response: service.Response{StatusCode: 1, StatusMsg: "用户不存在，请先注册"},
 		})
 	}
 }
@@ -85,12 +85,12 @@ func UserInfo(c *gin.Context) {
 	user := service.GetUserinfoById(string(id))
 	if user != (service.User{}) {
 		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 0},
-			User:     User(user),
+			Response: service.Response{StatusCode: 0},
+			User:     service.User(user),
 		})
 	} else {
 		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "用户不存在"},
+			Response: service.Response{StatusCode: 1, StatusMsg: "用户不存在"},
 		})
 	}
 

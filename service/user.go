@@ -14,14 +14,6 @@ type UserLogin struct {
 	Password string
 }
 
-type User struct {
-	Id            int64  `json:"id,omitempty"`
-	Name          string `json:"name,omitempty"`
-	FollowCount   int64  `json:"follow_count,omitempty"`
-	FollowerCount int64  `json:"follower_count,omitempty"`
-	IsFollow      bool   `json:"is_follow,omitempty"`
-}
-
 // IsExist
 //  @Description: 通过注册邮箱查找用户是否存在
 //  @param email: 注册邮箱号
