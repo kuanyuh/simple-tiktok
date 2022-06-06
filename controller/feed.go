@@ -27,9 +27,9 @@ func Feed(c *gin.Context) {
 		c.JSON(http.StatusOK, UserResponse{Response: Response{StatusCode: -1}})
 	}
 	videos := service.Feed()
-	feedVideos := []Video{}
+	var feedVideos []Video
 	//结构体复制
-	videoCopy(&feedVideos,&videos)
+	videoCopy(&feedVideos, &videos, string(id))
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  Response{StatusCode: 0},
 		VideoList: feedVideos,
@@ -37,17 +37,39 @@ func Feed(c *gin.Context) {
 	})
 }
 
-func videoCopy(feedVideos *[]Video, videos *[]service.Video)  {
+//func videoCopy(feedVideos *[]Video, videos *[]service.Video)  {
+//	for _, video := range *videos {
+//		feedVideo := Video{
+//			Id: video.Id,
+//			Author: User(service.GetUserinfoById(strconv.FormatInt(video.AuthorId,10))),
+//			PlayUrl: video.PlayUrl,
+//			CoverUrl: video.CoverUrl,
+//			FavoriteCount: video.FavoriteCount,
+//			CommentCount: video.CommentCount,
+//			IsFavorite: video.IsFavorite,
+//		}
+//		*feedVideos = append(*feedVideos, feedVideo)
+//	}
+//}
+func videoCopy(feedVideos *[]Video, videos *[]service.Video, userId string) {
 	for _, video := range *videos {
-		feedVideo := Video{
-			Id: video.Id,
-			Author: User(service.GetUserinfoById(strconv.FormatInt(video.AuthorId,10))),
-			PlayUrl: video.PlayUrl,
-			CoverUrl: video.CoverUrl,
-			FavoriteCount: video.FavoriteCount,
-			CommentCount: video.CommentCount,
-			IsFavorite: video.IsFavorite,
+		var isFavorite bool
+		if userId == "" {
+			isFavorite = false
+		} else {
+			isFavorite = service.IsFavorite(userId, strconv.FormatInt(video.Id, 10))
 		}
+		feedVideo := Video{
+			Id:            video.Id,
+			Author:        User(service.GetUserinfoById(strconv.FormatInt(video.AuthorId, 10))),
+			PlayUrl:       video.PlayUrl,
+			CoverUrl:      video.CoverUrl,
+			FavoriteCount: video.FavoriteCount,
+			CommentCount:  video.CommentCount,
+			IsFavorite:    isFavorite,
+			Title:         video.Title,
+		}
+
 		*feedVideos = append(*feedVideos, feedVideo)
 	}
 }

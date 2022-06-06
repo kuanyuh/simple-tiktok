@@ -65,10 +65,10 @@ func PublishList(c *gin.Context) {
 	if user == (service.User{}) {
 		c.JSON(http.StatusOK, UserResponse{Response: Response{StatusCode: -1}})
 	}
-	userId:= c.Query("user_id")
+	userId := c.Query("user_id")
 	videos := service.PublishList(userId)
 	var publishVideo []Video
-	videoCopy(&publishVideo, &videos)
+	videoCopy(&publishVideo, &videos, string(id))
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,
