@@ -1,5 +1,7 @@
 package controller
 
+import "github.com/kuanyuh/simple-tiktok/service"
+
 const HOST = "http://100.120.62.90:8080"
 
 var DemoVideos = []Video{
@@ -50,7 +52,7 @@ var DemoVideos = []Video{
 	},
 }
 
-var DemoComments = []Comment{
+var DemoComments = []service.Comment{
 	{
 		Id:         1,
 		User:       DemoUser,
@@ -59,7 +61,7 @@ var DemoComments = []Comment{
 	},
 }
 
-var DemoUser = User{
+var DemoUser = service.User{
 	Id:            1,
 	Name:          "TestUser",
 	FollowCount:   0,

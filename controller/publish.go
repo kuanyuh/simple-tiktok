@@ -11,7 +11,7 @@ import (
 )
 
 type VideoListResponse struct {
-	Response
+	service.Response
 	VideoList []Video `json:"video_list"`
 }
 
@@ -25,13 +25,13 @@ func Publish(c *gin.Context) {
 	userInfo := service.GetUserinfoById(string(id))
 
 	if userInfo == (service.User{}) {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		c.JSON(http.StatusOK, service.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
 
 	data, err := c.FormFile("data")
 	if err != nil {
-		c.JSON(http.StatusOK, Response{
+		c.JSON(http.StatusOK, service.Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
@@ -42,14 +42,14 @@ func Publish(c *gin.Context) {
 	finalName := fmt.Sprintf("%d_%s", userInfo.Id, filename)
 	saveFile := filepath.Join("./public/", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
-		c.JSON(http.StatusOK, Response{
+		c.JSON(http.StatusOK, service.Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, Response{
+	c.JSON(http.StatusOK, service.Response{
 		StatusCode: 0,
 		StatusMsg:  finalName + " uploaded successfully",
 	})
@@ -58,7 +58,7 @@ func Publish(c *gin.Context) {
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
 	c.JSON(http.StatusOK, VideoListResponse{
-		Response: Response{
+		Response: service.Response{
 			StatusCode: 0,
 		},
 		VideoList: DemoVideos,
