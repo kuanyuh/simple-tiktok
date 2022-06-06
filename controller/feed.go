@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/common"
 	"github.com/kuanyuh/simple-tiktok/service"
 	"net/http"
 	"strconv"
@@ -16,6 +18,14 @@ type FeedResponse struct {
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
+	token := c.Query("token")
+	//解析token
+	claims := common.ParseHStoken(token)
+	id, _ := json.Marshal(claims["id"])
+	user := service.GetUserinfoById(string(id))
+	if user == (service.User{}) {
+		c.JSON(http.StatusOK, UserResponse{Response: Response{StatusCode: -1}})
+	}
 	videos := service.Feed()
 	feedVideos := []Video{}
 	//结构体复制
