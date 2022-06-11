@@ -1,5 +1,13 @@
 package controller
 
+import (
+	"encoding/json"
+	"github.com/gin-gonic/gin"
+	"github.com/kuanyuh/simple-tiktok/common"
+	"github.com/kuanyuh/simple-tiktok/service"
+	"strconv"
+)
+
 type Response struct {
 	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg,omitempty"`
@@ -28,4 +36,31 @@ type User struct {
 	FollowCount   int64  `json:"follow_count,omitempty"`
 	FollowerCount int64  `json:"follower_count,omitempty"`
 	IsFollow      bool   `json:"is_follow,omitempty"`
+}
+
+func CommentsFormat(userComments []service.Comment) []Comment {
+	var comments []Comment
+	for _, userComment := range userComments {
+		comments = append(comments, CommentFormat(userComment))
+	}
+	return comments
+}
+
+func CommentFormat(commentModel service.Comment) Comment {
+	var comment Comment
+	comment = Comment{
+		Id:         commentModel.Id,
+		User:       User(service.GetUserinfoById(strconv.FormatInt(commentModel.UserId, 10))),
+		Content:    commentModel.Content,
+		CreateDate: commentModel.CreateDate,
+	}
+	return comment
+}
+
+func GetUserFromToken(c *gin.Context) service.User {
+	token := c.Query("token")
+	claims := common.ParseHStoken(token)
+	id, _ := json.Marshal(claims["id"])
+	user := service.GetUserinfoById(string(id))
+	return user
 }

@@ -24,7 +24,7 @@ var DemoVideos = []Video{
 	{
 		Id:            3,
 		Author:        DemoUser,
-		PlayUrl:       HOST+"/static/v2.mp4",
+		PlayUrl:       HOST + "/static/v2.mp4",
 		CoverUrl:      "https://kuanyuh.github.io/img/favicon.png",
 		FavoriteCount: 0,
 		CommentCount:  0,
