@@ -73,3 +73,4 @@ func videoCopy(feedVideos *[]Video, videos *[]service.Video, userId string) {
 		*feedVideos = append(*feedVideos, feedVideo)
 	}
 }
+
