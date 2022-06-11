@@ -55,13 +55,26 @@ func Publish(c *gin.Context) {
 	})
 }
 
+
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
-
+	token := c.Query("token")
+	//解析token
+	claims := common.ParseHStoken(token)
+	id, _ := json.Marshal(claims["id"])
+	user := service.GetUserinfoById(string(id))
+	if user == (service.User{}) {
+		c.JSON(http.StatusOK, UserResponse{Response: Response{StatusCode: -1}})
+	}
+	userId := c.Query("user_id")
+	videos := service.PublishList(userId)
+	var publishVideo []Video
+	videoCopy(&publishVideo, &videos, string(id))
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,
 		},
-		VideoList: DemoVideos,
+		VideoList: publishVideo,
 	})
 }
+

@@ -74,6 +74,17 @@ func GetUserinfoById(id string) User {
 	return user
 }
 
+//IsFollow 判断 前者是否 follow 后者
+func IsFollow(followerId int64, user *User)  {
+	err := dao.DB.Table("relation").Where("user_id = ? AND to_user_id = ? AND is_follow=1", followerId, user.Id).First(&Relation{}).Error
+	if err != nil {
+		(*user).IsFollow = false
+		return
+	}
+	(*user).IsFollow = true
+}
+
+
 //GetRandomString 生成随机字符串，作为用户名
 func GetRandomString(l int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"

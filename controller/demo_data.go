@@ -30,6 +30,24 @@ var DemoVideos = []Video{
 		CommentCount:  0,
 		IsFavorite:    false,
 	},
+	{
+		Id:            4,
+		Author:        DemoUser,
+		PlayUrl:       "http://121.5.225.209:9000/product/product_1654357481775.mp4",
+		CoverUrl:      "http://121.5.225.209:9000/product/product_1654357233945.jpg",
+		FavoriteCount: 0,
+		CommentCount:  0,
+		IsFavorite:    false,
+	},
+	{
+		Id:            5,
+		Author:        DemoUser,
+		PlayUrl:       "http://121.5.225.209:9000/product/product_1654358443093.mp4",
+		CoverUrl:      "http://121.5.225.209:9000/product/product_1654358548050.png",
+		FavoriteCount: 0,
+		CommentCount:  0,
+		IsFavorite:    false,
+	},
 }
 
 var DemoComments = []Comment{
