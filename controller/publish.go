@@ -8,6 +8,7 @@ import (
 	"github.com/kuanyuh/simple-tiktok/service"
 	"net/http"
 	"path/filepath"
+	"strconv"
 )
 
 type VideoListResponse struct {
@@ -39,9 +40,12 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)
-	finalName := fmt.Sprintf("%d_%s", userInfo.Id, filename)
-	saveFile := filepath.Join("./public/", finalName)
-	if err := c.SaveUploadedFile(data, saveFile); err != nil {
+	finalName := fmt.Sprintf("test/%d/%s", userInfo.Id, filename)
+	file,_ := data.Open()
+	authorId,_ := strconv.ParseInt(string(id), 10, 64)
+	_, err = service.Publish(authorId, file, data.Size, filename)
+	//saveFile := filepath.Join("./public/", finalName)
+	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),

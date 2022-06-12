@@ -14,7 +14,7 @@ func TestVideoCopy(t *testing.T) {
 		fmt.Printf(" %v: %v\n",i,video)
 	}
 	var feedVideos []Video
-	videoCopy(&feedVideos,&videos)
+	//videoCopy(&feedVideos,&videos)
 	for _, video := range feedVideos {
 		fmt.Printf("%v\n", video)
 	}
