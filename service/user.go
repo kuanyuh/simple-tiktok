@@ -1,7 +1,6 @@
 package service
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/kuanyuh/simple-tiktok/dao"
 	"math/rand"
 	"time"

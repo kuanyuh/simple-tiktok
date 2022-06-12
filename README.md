@@ -6,11 +6,17 @@
 
 [app说明文档](https://bytedance.feishu.cn/docs/doccnM9KkBAdyDhg8qaeGlIz7S7)
 
-[接口文档](https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/api-18900033)
+[接口文档](https://www.apifox.cn/apidoc/shared-48341489-07e8-498d-863d-03dcf81d0eea)
 
-工程无其他依赖，直接编译运行即可
+下载工程依赖
 
 ```shell
+go get	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+go get	github.com/gin-gonic/gin v1.7.7
+go get	github.com/qiniu/go-sdk/v7 v7.13.0
+go get	gorm.io/driver/mysql v1.3.3
+go get	gorm.io/gorm v1.23.5
+# 编译运行
 go build && ./simple-demo
 ```
 
@@ -21,8 +27,8 @@ go build && ./simple-demo
 | 视频 Feed 流 | 支持所有用户刷抖音，按投稿时间倒序推出 | <input type="checkbox" checked=true> |
 | 视频投稿 | 登录用户可以自己拍视频投稿 | <input type="checkbox" checked=true> |
 | 个人信息 | 查看自己的基本信息和投稿列表，注册用户流程简化 | <input type="checkbox" checked=true>
-| 点赞列表 | 在个人主页能够查看点赞视频列表 | <input type="checkbox">
-| 用户评论 | 登录用户可以对视频点赞，并在视频下进行评论 | <input type="checkbox">
+| 点赞列表 | 在个人主页能够查看点赞视频列表 | <input type="checkbox" checked=true>
+| 用户评论 | 登录用户可以对视频点赞，并在视频下进行评论 | <input type="checkbox" checked=true>
 | 关注列表、粉丝列表 | 登录用户可以关注其他用户，能够在个人信息页查看本人的关注数和粉丝数，点击打开关注列表和粉丝列表。 | <input type="checkbox" checked=true>
 
 * 用户登录数据保存在 mysql 中，使用前请提前配置数据库。
@@ -31,4 +37,4 @@ go build && ./simple-demo
 
 ### 测试数据
 
-测试数据写在 demo_data.go 中，用于列表接口的 mock 测试
+测试数据写在 Apifox 文档中，用于列表接口的 mock 测试
