@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	"github.com/kuanyuh/simple-tiktok/common"
 	"github.com/kuanyuh/simple-tiktok/dao"
+	"github.com/kuanyuh/simple-tiktok/qiniu"
 	"testing"
 )
 
@@ -16,6 +16,6 @@ func TestPublishList(t *testing.T) {
 
 func TestPublish(t *testing.T) {
 	dao.Init()
-	common.QiniuInit()
+	qiniu.QiniuInit()
 
 }

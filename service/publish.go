@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
-	"github.com/kuanyuh/simple-tiktok/common"
 	"github.com/kuanyuh/simple-tiktok/dao"
+	"github.com/kuanyuh/simple-tiktok/qiniu"
 	"io"
 	"time"
 )
@@ -16,7 +16,7 @@ func PublishList(userId string) []Video{
 
 func Publish(authorId int64, file io.Reader, fileSize int64, key string) (int, error) {
 	//code, url := common.UploadLocal(key)
-	code, url := common.Upload(file, fileSize, key)
+	code, url := qiniu.Upload(file, fileSize, key)
 	if code == 200 {
 		video := Video{
 			AuthorId: authorId,

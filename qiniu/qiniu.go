@@ -1,4 +1,4 @@
-package common
+package qiniu
 
 import (
 	"context"
