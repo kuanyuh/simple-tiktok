@@ -4,9 +4,11 @@
 
 具体功能内容参考 app 说明文档
 
-[app说明文档](https://bytedance.feishu.cn/docs/doccnM9KkBAdyDhg8qaeGlIz7S7)
+[数据库文档](./sql/sql.md)
 
 [接口文档](https://www.apifox.cn/apidoc/shared-48341489-07e8-498d-863d-03dcf81d0eea)
+
+[展示ppt](https://hezpfjva7m.feishu.cn/file/boxcnL6nQFk1VurDPdxkg4M9ZDf)
 
 下载工程依赖
 
@@ -32,7 +34,6 @@ go build && ./simple-demo
 | 关注列表、粉丝列表 | 登录用户可以关注其他用户，能够在个人信息页查看本人的关注数和粉丝数，点击打开关注列表和粉丝列表。 | <input type="checkbox" checked=true>
 
 * 用户登录数据保存在 mysql 中，使用前请提前配置数据库。
-* 视频上传后会保存到本地 public 目录中，访问时用 127.0.0.1:8080/static/video_name 即可
 * 安装 app 后，请打开首页，在右下角双击 “**我**” ，配置后端路径。
 
 ### 测试数据
